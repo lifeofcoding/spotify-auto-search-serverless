@@ -1,0 +1,30 @@
+Log in with Spotify
+
+Load any existing search query
+
+Text box for input (line separated)
+
+Save button --> saves you search qur against your account
+
+Search button
+
+------------------------------
+Results separated by search query, shows top 3 results per search
+
+Option to click on a search result to add it to your library, or to one of your playlists
+Tickbox to remove it from your search query
+
+
+-----------------------------
+Option to automatically search for songs on a weekly basis, and email you results
+Email contains link with a UUID, links to search results with above options to save etc (will require a sign in)
+Link expires after next search executed
+
+
+
+-- Architecture
+
+Hosted in Elastic Beanstalk (for now)
+.NET server, connected to Spotify
++ Angular client
+
