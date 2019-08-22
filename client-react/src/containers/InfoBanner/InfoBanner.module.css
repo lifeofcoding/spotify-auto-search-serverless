@@ -1,0 +1,22 @@
+.InfoBanner {
+    width: 100%;
+    background-color: #1db954;
+    overflow: hidden;
+    transition: max-height 0.2s cubic-bezier(0, 1, 0, 1);
+    max-height: 1000px;
+}
+.Container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    flex-shrink: 0;
+}
+
+.Text {
+}
+
+.DismissBtn {
+    margin-left: 12px;
+}

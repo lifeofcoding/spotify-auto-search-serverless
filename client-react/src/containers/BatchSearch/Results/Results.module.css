@@ -1,0 +1,43 @@
+.Container {
+    padding: 0 12px;
+    overflow-x: hidden;
+}
+
+.QueryResults {
+    display: flex;
+    flex-direction: column;
+}
+
+.QueryTitle, .Tracks {
+    flex: 0 0 50%;
+    margin-top: 20px;
+}
+
+.QueryTitle {
+    display: flex;
+    height: fit-content;
+    line-height: 1.4;
+}
+.QueryTitleText {
+    margin-left: 12px;
+}
+
+.SearchIcon {
+    width: 16px;
+    height: 16px;
+    margin-top: 5px;
+}
+
+@media (min-width: 768px) {
+    .QueryResults {
+        flex-direction: row;
+    }
+
+    .QueryTitle {
+        padding-right: 6px;
+    }
+
+    .Tracks {
+        padding-left: 6px;
+    }
+}

@@ -1,0 +1,48 @@
+.Track {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    color: white;
+    margin-bottom: 14px;
+}
+
+.artwork {
+    width: 50px;
+    height: 50px;
+}
+
+.itemDetails {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 8px;
+    flex-grow: 1;
+}
+
+.title {
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.subheading {
+    font-size: 14px;
+    color: #999999;
+}
+
+.actionButton {
+    width: 15px;
+    height: 15px;
+}
+
+.TrackActionButtons {
+    height: 100%;
+    position: absolute;
+    right: -12px;
+}
+
+@media (min-width: 768px) {
+    .TrackActionButtons {
+        right: 0px;
+    }
+}

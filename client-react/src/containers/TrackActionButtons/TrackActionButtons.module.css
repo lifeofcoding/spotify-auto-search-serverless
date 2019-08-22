@@ -1,0 +1,59 @@
+.Container {
+    display: flex;
+    overflow: hidden;
+    transition: transform 0.3s, opacity 0.3s, visibility 0.3s;
+    transform: translateX(30px);
+    opacity: 0;
+    visibility: hidden;
+}
+
+.Button {
+    width: 112px;
+    display: flex;
+    border: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+
+.Visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0px);
+}
+
+.Icon {
+    background-size: contain;
+    background-repeat: no-repeat;
+    transition: background-image 0.2s, transform 0.2s;
+    height: 16px;
+    width: 16px;
+}
+
+.Save {
+    composes: Button;
+    background-color: #1db954;
+    color: white;
+}
+
+.Save:hover {
+    background-color: #148e3f;
+}
+
+.Playlist {
+    composes: Button;
+    background-color: white;
+    color: #373737;
+}
+
+.Playlist:hover {
+    background-color: #c1c1c1;
+}
+
+.Label {
+    text-transform: uppercase;
+    font-size: 12px;
+    margin-top: 5px;
+}

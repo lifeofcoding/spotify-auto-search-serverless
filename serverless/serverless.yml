@@ -11,10 +11,10 @@ provider:
   runtime: nodejs8.10
 
 functions:
-  hello:
-    handler: handler.hello
+  spotifyAuthorize:
+    handler: handlers/spotify.authorize
     events:
       - http:
-          method: get
-          path: hello
+          method: post
+          path: spotify/authorize
 

@@ -26,7 +26,7 @@ export class ApiService {
   }
 
   private getUrl(endpoint: string) {
-    return environment.baseApiUrl + endpoint;
+    return environment.apiBaseUri + endpoint;
   }
 
   private handleError(error: HttpErrorResponse) {

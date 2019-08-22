@@ -4,8 +4,9 @@
 
 export const environment = {
   production: false,
+  apiBaseUri: 'http://localhost:3000',
   spotify: {
-    clientId: '17607b88c036478e93260208af2017bd',
+    clientId: 'a628992500f54598855e50e9af18f12c',
     baseApiUri: 'https://api.spotify.com/v1',
     authUri: 'https://accounts.spotify.com/authorize',
     redirectUri: 'http://localhost:4200/spotifycallback',

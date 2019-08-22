@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { SpotifyAccessToken } from '../models/spotify-access-token.model';
+import { SpotifyAccessToken } from '../dtos/spotify-access-token.model';
 import { ApiService } from './api.service';
 import { HttpClient } from '@angular/common/http';
+import { StorageService } from './storage.service';
+import { AccessToken } from '../models/access-token.model';
 
 @Injectable({
   providedIn: 'root'
@@ -12,21 +14,23 @@ export class SpotifyService {
 
   public authorized$ = new BehaviorSubject<boolean>(null);
 
-  private localStorageKey = 'authorizedSpotify';
-  private localStorageRef = sessionStorage;
-
-  private accessToken: string;
-  private expiry: Date;
+  private tokenStorageKey = 'spotifyToken';
+  private stateStorageKey = 'spotifyState';
 
   constructor(private apiService: ApiService,
+              private storageService: StorageService,
               private httpClient: HttpClient) {
     this.checkAuthorization();
-
-
   }
 
   private checkAuthorization() {
+    console.log('Check authorization');
+    const accessToken: AccessToken = this.storageService.get(this.tokenStorageKey);
+    accessToken.expiry = new Date(accessToken.expiry);
+    const authorized = accessToken && accessToken.accessToken && accessToken.expiry && accessToken.expiry > new Date();
+    this.authorized$.next(authorized);
   }
+
 
   /**
    * Opens the Spotify authorization page to allow the user to connect their Spotify account
@@ -35,12 +39,13 @@ export class SpotifyService {
     window.location.href = this.getAuthorizationUri();
   }
 
+
   /**
    * Compare received state from spotify callback with state stored in session storage
    * @param newState State value to compare with stored state
    */
   public validateState(newState: string): boolean {
-    const savedState = sessionStorage.getItem('spotifyState');
+    const savedState = sessionStorage.getItem(this.stateStorageKey);
     return savedState === newState;
   }
 
@@ -66,13 +71,17 @@ export class SpotifyService {
   }
 
   private saveAccessToken(token: SpotifyAccessToken) {
-    this.accessToken = token.accessToken;
-
     // Refresh 60 seconds early to prevent edge cases
-    this.expiry = new Date();
-    this.expiry.setSeconds(this.expiry.getSeconds() + token.expiresIn - 60);
+    const expiry = new Date();
+    expiry.setSeconds(expiry.getSeconds() + token.expiresIn - 60);
 
-    this.localStorageRef.setItem(this.localStorageKey, 'true');
+    const tokenToSave: AccessToken = {
+      accessToken: token.accessToken,
+      refreshToken: token.refreshToken,
+      expiry: expiry
+    };
+
+    this.storageService.set(this.tokenStorageKey, tokenToSave);
     this.authorized$.next(true);
   }
 
@@ -96,20 +105,20 @@ export class SpotifyService {
   }
 
   private accessTokenIsValid(token: SpotifyAccessToken): boolean {
-    return !!(token && token.accessToken && token.expiresIn);
+    return !!(token && token.accessToken && token.expiresIn && token.refreshToken);
   }
 
   // Ask our server for a new Spotify access token
-  private async refreshAccessToken() {
-    const token = await this.apiService.get<SpotifyAccessToken>('/spotify/refresh').toPromise();
-
-    // Check required fields are present and save
-    if (!this.accessTokenIsValid(token)) {
-      return;
-    }
-
-    this.saveAccessToken(token);
-  }
+  // private async refreshAccessToken() {
+  //   const token = await this.apiService.get<SpotifyAccessToken>('/spotify/refresh').toPromise();
+  //
+  //   // Check required fields are present and save
+  //   if (!this.accessTokenIsValid(token)) {
+  //     return;
+  //   }
+  //
+  //   this.saveAccessToken(token);
+  // }
 
   private uuid(): string {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
@@ -119,8 +128,12 @@ export class SpotifyService {
     });
   }
 
-  private async get<ReturnType>(endpoint: string): Promise<ReturnType> {
-    const response = await this.httpClient.get<ReturnType>(this.getUrl(endpoint)).toPromise();
+  private async get<ReturnType>(endpoint: string, queryStringParams: any = {}): Promise<ReturnType> {
+    let queryString = '';
+    Object.keys(queryStringParams).forEach(key => {
+      queryString += (!!queryString.length ? '&' : '') + key + '=' + encodeURI(queryStringParams[key]);
+    });
+    const response = await this.httpClient.get<ReturnType>(this.getUrl(endpoint + queryString)).toPromise();
     return response;
   }
 
